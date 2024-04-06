@@ -1,0 +1,81 @@
+﻿@using T_GProjects.EntityLayer.Concrete
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model List<Category>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    @foreach (var category in Model)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link category-link" data-category-id="@category.Id" href="#">@category.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+
+        <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
+            <div class="text-center">
+                T&G
+            </div>
+            <div class="row" id="productList">
+                <!-- Product cards will be dynamically added here -->
+            </div>
+        </main>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // When a category link on the left side is clicked
+                $('.category-link').click(function (e) {
+                    e.preventDefault();
+                    var categoryId = $(this).data('category-id');
+                    // Create a new URL based on the selected category
+                    var url = 'https://localhost:7048/api/Products/GetByCategoryId/' + categoryId;
+                    // Send an AJAX request to the new URL
+                    fetchProductList(url);
+                });
+
+                // Get the default product list when the page is loaded
+                var defaultUrl = 'https://localhost:7048/api/Products/GetAll';
+                fetchProductList(defaultUrl);
+
+                //---------
+                // Fetch the product list by sending an AJAX request
+                function fetchProductList(url) {
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            // Show the product list
+                            $('#productList').empty(); // Clear previous products
+                            response.forEach(function (product) {
+                                var productCard = `
+                                                <div class="col-md-4 mb-4">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">${product.name}</h5>
+                                                            <p class="card-text">${product.description}</p>
+                                                            <p class="card-text">Price: ${product.price}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                $('#productList').append(productCard);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('API Request Error:', status, error);
+                        }
+                    });
+                }
+            });
+        </script>
+    </div>
+</div>
