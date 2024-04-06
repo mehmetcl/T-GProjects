@@ -10,12 +10,15 @@
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
+
                     @foreach (var category in Model)
                     {
+                      
                         <li class="nav-item">
                             <a class="nav-link category-link" data-category-id="@category.Id" href="#">@category.Name</a>
                         </li>
                     }
+                   
                 </ul>
             </div>
         </nav>
@@ -31,7 +34,9 @@
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script>
             $(document).ready(function () {
+
                 // When a category link on the left side is clicked
+
                 $('.category-link').click(function (e) {
                     e.preventDefault();
                     var categoryId = $(this).data('category-id');
@@ -44,7 +49,7 @@
                 // Get the default product list when the page is loaded
                 var defaultUrl = 'https://localhost:7048/api/Products/GetAll';
                 fetchProductList(defaultUrl);
-
+               
                 //---------
                 // Fetch the product list by sending an AJAX request
                 function fetchProductList(url) {
@@ -56,6 +61,7 @@
                             // Show the product list
                             $('#productList').empty(); // Clear previous products
                             response.forEach(function (product) {
+                                console.log(product);
                                 var productCard = `
                                                 <div class="col-md-4 mb-4">
                                                     <div class="card">
